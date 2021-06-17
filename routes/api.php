@@ -18,8 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', function(Request $request){
-    dd($request->headers->all());
-    dd($request->headers->get('Authorization'));
+    // dd($request->headers->all());
+    // dd($request->headers->get('Authorization'));
+
     $response = new \Illuminate\Http\Response(json_encode(['msg' => 'First response with API']));
     $response->header('Content-Type', 'application/json');
     
@@ -28,6 +29,11 @@ Route::get('/test', function(Request $request){
 });
 
 //Products Route
-Route::namespace('Api')->group(function(){
-    Route::get('/products', 'ProductController@index');
+Route::namespace('Api')->prefix('products')->group(function(){
+    Route::get('/', 'ProductController@index');
+    Route::get('/{id}', 'ProductController@show');
+    Route::post('/', 'ProductController@save');
+    Route::put('/', 'ProductController@update');
+    // Route::put('/{id}', 'ProductController@update');
+    Route::delete('/{id}', 'ProductController@delete');
 });
