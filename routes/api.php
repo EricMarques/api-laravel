@@ -28,12 +28,17 @@ Route::get('/test', function(Request $request){
     
 });
 
-//Products Route
-Route::namespace('Api')->prefix('products')->group(function(){
-    Route::get('/', 'ProductController@index');
-    Route::get('/{id}', 'ProductController@show');
-    Route::post('/', 'ProductController@save');
-    Route::put('/', 'ProductController@update');
-    // Route::put('/{id}', 'ProductController@update');
-    Route::delete('/{id}', 'ProductController@delete');
+Route::namespace('Api')->group(function(){
+    
+    //Products Route
+    Route::prefix('products')->group(function(){
+        Route::get('/', 'ProductController@index');
+        Route::get('/{id}', 'ProductController@show');
+        Route::post('/', 'ProductController@save');
+        Route::put('/', 'ProductController@update');
+        //Route::put('/{id}', 'ProductController@update');
+        Route::delete('/{id}', 'ProductController@delete');
+    });
+
+    Route::resource('/users', 'UserController');
 });
