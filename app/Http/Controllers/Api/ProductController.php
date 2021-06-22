@@ -21,12 +21,32 @@ class ProductController extends Controller
         $this->product = $product;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->product->paginate(5);
+        $products = $this->product;
+
+        //Condições
+        if ($request->has('conditions'))
+        {
+            $expressions = explode(';', $request->get('conditions'));
+
+            foreach ($expressions as $e)
+            {
+                $exp = explode('=', $e);
+                $products = $products->where($exp[0], $exp[1]);
+            }
+        }
+
+        //Filtro por campos
+        if ($request->has('fields'))
+        {
+            $fields = $request->get('fields');
+            $products = $products->selectRaw($fields);
+            // return response()->json($fields);
+        }
 
         //return response()->json($products);
-        return new ProductCollection($products);
+        return new ProductCollection($products->paginate(10));
     }
 
     public function show($id)
