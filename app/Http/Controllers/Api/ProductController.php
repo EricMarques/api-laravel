@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repository\ProductRepository;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductCollection;
 
@@ -26,27 +27,17 @@ class ProductController extends Controller
         $products = $this->product;
 
         //Condições
+        $productRepository = new ProductRepository($products);
         if ($request->has('conditions'))
         {
-            $expressions = explode(';', $request->get('conditions'));
-
-            foreach ($expressions as $e)
-            {
-                $exp = explode('=', $e);
-                $products = $products->where($exp[0], $exp[1]);
-            }
+            $productRepository->selectConditions($request->get('conditions'));
         }
-
-        //Filtro por campos
         if ($request->has('fields'))
         {
-            $fields = $request->get('fields');
-            $products = $products->selectRaw($fields);
-            // return response()->json($fields);
+            $productRepository->selectFilter($request->get('fields'));
         }
-
         //return response()->json($products);
-        return new ProductCollection($products->paginate(10));
+        return new ProductCollection($productRepository->getResult()->paginate(10));
     }
 
     public function show($id)
