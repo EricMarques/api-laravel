@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Repository\ProductRepository;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductCollection;
@@ -18,7 +19,6 @@ class ProductController extends Controller
 
     public function __construct(Product $product)
     {
-         
         $this->product = $product;
     }
 
@@ -56,7 +56,7 @@ class ProductController extends Controller
 
     }
 
-    public function save(Request $request)
+    public function save(ProductRequest $request)
     {
         $data = $request->all();
         $product = $this->product->create($data);
@@ -64,7 +64,7 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function update(Request $request)
+    public function update(ProductRequest $request)
     {
         $data = $request->all();
         $product = $this->product->find($data['id']);
